@@ -1,0 +1,35 @@
+plugins {
+    id 'com.android.application'
+}
+
+android {
+    namespace 'com.luatool.app'
+    compileSdk 34
+
+    defaultConfig {
+        applicationId "com.luatool.app"
+        minSdk 21
+        // Deliberately old: keeps legacy storage/overlay behaviour and works best inside virtual environments.
+        targetSdk 28
+        versionCode 1
+        versionName "1.0"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    lint {
+        abortOnError false
+        checkReleaseBuilds false
+    }
+}
+// No dependencies: pure Java (LuaJ is vendored under org/luaj), so the APK has no native libs
+// and runs on any ABI (including 32-bit armeabi-v7a).
