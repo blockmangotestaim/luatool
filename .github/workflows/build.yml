@@ -1,1 +1,36 @@
+name: Build LuaTool APK
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main, master ]
 
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # If you uploaded the project as a single zip (easiest on a phone), unpack it first.
+      - name: Unpack luatool.zip if present
+        run: |
+          if [ -f luatool.zip ]; then
+            unzip -o luatool.zip -d _src
+            cp -r _src/luatool/. .
+          fi
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.7'
+
+      - name: Build debug APK
+        run: gradle assembleDebug --no-daemon --stacktrace
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: LuaTool-debug-apk
+          path: app/build/outputs/apk/debug/*.apk
